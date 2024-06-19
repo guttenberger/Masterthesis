@@ -24,3 +24,16 @@
             path: "{{ hibench_home }}/conf/hadoop.conf"
             regexp: "^hibench.hdfs.master.*"
             line: "hibench.hdfs.master    {{ hdfs_master.stdout }}"
+    
+        - name: Set hdfs_master in hadoop.conf
+      block:
+        - name: Read hdfs_master from core-site.xml
+          shell: grep '<name>fs.defaultFS</name>' /usr/hdp/current/hadoop-client/conf/core-site.xml -A1 | grep value | awk -F '>' '{print $2}' | awk -F '<' '{print $1}'
+          register: hdfs_master
+
+    # Set hibench data size
+    - name: Replace value in hadoop.conf
+      lineinfile:
+        path: "{{ hibench_home }}/conf/hibench.conf"
+        regexp: "^hibench.scale.profile*"
+        line: "hibench.scale.profile                {{ hibench_data_size }}"

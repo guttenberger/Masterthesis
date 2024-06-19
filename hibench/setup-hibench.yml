@@ -22,18 +22,13 @@
     - name: Install basic tools
       apt:
         name:
-          - build-essential
-          - software-properties-common
-          - git
-          - tar
-          - wget
-          - curl
-          - man
           - unzip
-          - vim-tiny
-          - bc
         update_cache: yes
         state: present
+      register: install_basic_tools
+      retries: 5
+      delay: 10
+      until: install_basic_tools is succeeded
 
     - name: Install Python
       apt:

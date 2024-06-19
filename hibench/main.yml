@@ -7,6 +7,8 @@
     monitoring_interval: 5  # Interval in seconds between samples
     tmux_sar_session: "sar_monitoring"
     delay_between_benchmarks: 1  # Delay in minutes between each benchmark run
+    number_of_workers: "{{ number_of_workers }}"  # read number of worker nodes from env variables
+    hibench_data_size: "{{ hibench_data_size }}" # size of the hibench input data
 
     # Define the benchmarks with their respective prepare and run scripts
     benchmarks:
@@ -26,7 +28,7 @@
   pre_tasks:
     - name: Set the timestamp for the result directory
       set_fact:
-        local_results_dir: "results/data/{{ lookup('pipe', \"date +'%Y-%m-%d_%H-%M'\") }}"
+        local_results_dir: "results/data/{{ number_of_workers }}/{{ hibench_data_size }}/{{ lookup('pipe', \"date +'%Y-%m-%d_%H-%M'\") }}"
 
   tasks:
     # Include common tasks such as installing prerequisites

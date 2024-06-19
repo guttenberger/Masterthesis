@@ -22,7 +22,7 @@ destroy-force:
 # ANSIBLE COMMANDS
 
 submit:
-	ansible-playbook -i hibench/hosts.ini hibench/main.yml
+	ansible-playbook -i hibench/hosts.ini hibench/main.yml -e "number_of_workers=4 hibench_data_size=small"
 
 setup:
 	ansible-playbook -i hibench/hosts.ini hibench/setup-hibench.yml

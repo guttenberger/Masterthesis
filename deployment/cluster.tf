@@ -1,4 +1,22 @@
-## use existing resource group instead
+variable "HDInsight_version" {
+  description = "Version of HDInsight"
+  type        = string
+  default     = "4.0"
+}
+
+variable "hadoop_version" {
+  description = "Version of Hadoop of the HDInsight cluster, get it from HDInsight documentation"
+  type        = string
+  default     = "3.1"
+}
+
+variable "number_of_workers" {
+  description = "Number of worker nodes"
+  type        = number
+  default     = 1
+}
+
+## Example for creating new ressource group
 # resource "azurerm_resource_group" "similarity_exp_rg" {
 #   name     = "SimilarityExperimentRG" # Name of the resource group
 #   location = "germanywestcentral" # Geographic location for the resources
@@ -52,14 +70,11 @@ resource "azurerm_hdinsight_hadoop_cluster" "similarity_exp_hadoop_cluster" {
   # location            = azurerm_resource_group.similarity_exp_rg.location
   resource_group_name = data.azurerm_resource_group.similarity_exp_rg.name
   location            = data.azurerm_resource_group.similarity_exp_rg.location
-  ## Region abhängig
-  # cluster_version     = "5.0" # HDI cluster version -> 3.3.4
-  cluster_version     = "4.0" # HDI cluster version -> 3.1.0
-  # cluster_version     = "3.6"
   tier                = "Standard"
 
+  cluster_version     = var.HDInsight_version
   component_version {
-    hadoop = "3.1"
+    hadoop = var.hadoop_version
   }
 
   # Gateway configuration for the cluster
@@ -86,10 +101,10 @@ resource "azurerm_hdinsight_hadoop_cluster" "similarity_exp_hadoop_cluster" {
 
     # Worker node configuration
     worker_node {
-      vm_size               = "Standard_A2m_V2" # VM size for worker nodes
-      username              = "simexpuservm"
+      vm_size  = "Standard_A2m_V2" # VM size for worker nodes
+      username = "simexpuservm"
       ssh_keys = [local.ssh_public_key_content]
-      target_instance_count = 1 # Number of worker nodes
+      target_instance_count = var.number_of_workers # Number of worker nodes
     }
 
     zookeeper_node {
